@@ -26,7 +26,7 @@ const createCard = (req, res, next) => {
       if (!data) {
         throw new BadRequestError('Переданы некорректные данные');
       }
-      res.status(201).send(data);
+      res.status(201).send({ message: "Пользователь успешно создан!"});
     })
     .catch((err) => {
       next(err);
@@ -49,7 +49,7 @@ const deleteCard = (req, res, next) => {
             if (!card) {
               throw new NotFountError('Карточка не найдена');
             }
-            res.status(200).send(card);
+            return res.status(200).send(card);
           })
           .catch((err) => {
             next(err);

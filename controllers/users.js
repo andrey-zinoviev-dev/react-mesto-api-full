@@ -5,7 +5,7 @@ const NotFoundError = require('../errors/notFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const BadRequestError = require('../errors/badRequestError');
 const ForbiddenError = require('../errors/forbiddenError');
-
+const UserExistsError = require('../errors/UserExistsError');
 const showUsers = (req, res, next) => {
   User.find({})
     .then((data) => {
@@ -39,7 +39,7 @@ const addUser = (req, res, next) => {
     User.findOne({ email })
       .then((user) => {
         if (user) {
-          throw new Error('Пользователь уже существует');
+          throw new UserExistsError('Пользователь уже существует');
         }
         User.create({
           name: 'Владимир', about: 'На массе на сушках', avatar: 'https://i.ytimg.com/vi/mgx0q5mEuP8/maxresdefault.jpg', email, password: hash,
@@ -68,7 +68,7 @@ const updateUser = (req, res, next) => {
     return res.status(400).send({ message: 'Нет прав для этой операции' });
   }
 
-  return User.findByIdAndUpdate(_id, req.body, { new: true })
+  return User.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
     .then((data) => {
       if (!data) {
         throw new BadRequestError('Переданы некорректные данные');
@@ -88,7 +88,7 @@ const updateUserAvatar = (req, res, next) => {
     throw new ForbiddenError('Нет прав для этой операции');
     // return res.status(400).send({ message: "Нет прав для этой операции" });
   }
-  return User.findByIdAndUpdate(_id, { avatar }, { new: true })
+  return User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
     .then((data) => {
       if (!data) {
         throw new BadRequestError('Переданыеы некорректные данные');

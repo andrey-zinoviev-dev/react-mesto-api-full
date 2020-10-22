@@ -1,8 +1,9 @@
 require('dotenv').config();
 
-if (!process.env.SECRET_KEY) {
-  throw new Error('Не установлена переменная SECRET_KEY');
-}
+// if (!process.env.SECRET_KEY) {
+//   throw new Error('Не установлена переменная SECRET_KEY');
+// }
+
 const express = require('express');
 
 // const path = require('path');
@@ -84,11 +85,12 @@ app.use(errorLogger);
 app.use(errorHandler);
 
 app.use(errors());
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).send({ message: err.message });
 });
 
 const { PORT = 3000 } = process.env;
+
 app.listen(PORT, () => {
   console.log('Listenning at the prot: ', PORT);
 });
