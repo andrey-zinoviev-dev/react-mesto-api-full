@@ -48,7 +48,7 @@ const addUser = (req, res, next) => {
             if (!data) {
               throw new UnauthorizedError('Переданы некорректные данные');
             }
-            res.status(201).send(data);
+            res.status(201).send({ message: "Пользователь успешно создан!"});
           })
           .catch((err) => {
             next(err);

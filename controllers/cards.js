@@ -26,7 +26,7 @@ const createCard = (req, res, next) => {
       if (!data) {
         throw new BadRequestError('Переданы некорректные данные');
       }
-      res.status(201).send({ message: "Пользователь успешно создан!"});
+      res.status(201).send(data);
     })
     .catch((err) => {
       next(err);
