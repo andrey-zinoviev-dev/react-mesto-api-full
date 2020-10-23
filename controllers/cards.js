@@ -53,15 +53,12 @@ const deleteCard = (req, res, next) => {
           })
           .catch((err) => {
             next(err);
-            // res.status(404).send({ message: 'Карточка не найдена' });
           });
       }
       throw new ForbiddenError('У Вас нет прав для удаления');
-    // return res.status(400).send({ message: 'У Вас нет прав для удаления' });
     })
     .catch((err) => {
       next(err);
-    // res.status(404).send({ message: 'Карточка не найдена' });
     });
 };
 
@@ -78,7 +75,6 @@ const likeCard = (req, res, next) => {
     })
     .catch((err) => {
       next(err);
-      // res.status(404).send({ message: 'Карточка не найдена' });
     });
 };
 

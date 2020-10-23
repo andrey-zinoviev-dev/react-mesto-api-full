@@ -86,7 +86,7 @@ app.use(errorHandler);
 
 app.use(errors());
 app.use((err, req, res, next) => {
-  res.status(err.statusCode || 500).send({ message: err.message });
+  res.status(err.statusCode || 500).send({ message: err.message || "Ошибка сервера" });
 });
 
 const { PORT = 3000 } = process.env;

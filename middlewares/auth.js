@@ -17,7 +17,6 @@ const authentificate = (req, res, next) => {
   } else {
       next(new ForbiddenError('Необходима авторизация'));
   }
-    // return res.status(401).send({ message: 'Необходима авторизация' });
 };
 
 module.exports = {
