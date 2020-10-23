@@ -131,6 +131,7 @@ const login = (req, res, next) => {
     });
 };
 const getCurrentUser = (req, res, next) => {
+
   const { _id } = req.user;
   if (!_id) {
     throw new NotFoundError('Пользователь не найден');

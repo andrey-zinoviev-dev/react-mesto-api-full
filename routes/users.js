@@ -12,6 +12,7 @@ const router = express.Router();
 // const usersFilePath = path.join(__dirname, '../data/users.json');
 router.get('/users', showUsers);
 router.get('/users/me', getCurrentUser);
+
 router.get('/users/:id', celebrate({
   params: Joi.object().keys({
     id: Joi.string().hex().length(24),
