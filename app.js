@@ -68,7 +68,7 @@ app.use(errorHandler);
 app.use(errors());
 //  eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  res.status(err.statusCode || 500).send({ message: err.message || 'Ошибка сервера' });
+  res.status(err.statusCode || 500).send({ message: res.status === 500 ? 'Ошибка сервера' : err.message });
 });
 
 const { PORT = 3000 } = process.env;
