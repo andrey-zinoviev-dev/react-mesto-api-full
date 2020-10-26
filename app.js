@@ -17,12 +17,7 @@ const { login, addUser } = require('./controllers/users');
 const { authentificate } = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/notFoundError');
-// const { propfind } = require('./routes/cards');
-// const allowedCors = [
-//   'http://dtm.students.nomoreparties.co',
-//   'http://www.dtm.students.nomoreparties.co',
-//   'http://localhost:3000',
-// ];
+
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -40,6 +35,7 @@ app.use(bodyParser.json());
 app.use(cors({
   origin: 'https://scp.students.nomoreparties.space',
 }));
+
 app.use(requestLogger);
 
 app.get('/crash-test', () => {
