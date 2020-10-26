@@ -6,6 +6,8 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 const BadRequestError = require('../errors/badRequestError');
 const ForbiddenError = require('../errors/forbiddenError');
 const UserExistsError = require('../errors/UserExistsError');
+
+const { SECRET_KEY = 'SOMEDATASUPERSECRET' } = process.env;
 const showUsers = (req, res, next) => {
   User.find({})
     .then((data) => {
@@ -30,8 +32,8 @@ const showUser = (req, res, next) => {
     })
     .catch((err) => {
       next(err);
-    })
-}
+    });
+};
 
 const addUser = (req, res, next) => {
   const { email, password } = req.body;
@@ -43,17 +45,16 @@ const addUser = (req, res, next) => {
         }
         User.create({
           name: 'Владимир', about: 'На массе на сушках', avatar: 'https://i.ytimg.com/vi/mgx0q5mEuP8/maxresdefault.jpg', email, password: hash,
-        })
+        }) // eslint-disable-next-line no-unused-vars
           .then((data) => {
-            res.status(201).send({ message: "Пользователь успешно создан!"});
-          })
+            res.status(201).send({ message: 'Пользователь успешно создан!' });
+          })// eslint-disable-next-line no-unused-vars
           .catch((err) => {
             next(new UnauthorizedError('Переданы некорректные данные'));
           });
       })
       .catch((err) => {
         next(err);
-
       });
   });
 };
@@ -74,7 +75,6 @@ const updateUser = (req, res, next) => {
     })
     .catch((err) => {
       next(err);
-
     });
 };
 
@@ -83,7 +83,6 @@ const updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   if (req.body._id) {
     throw new ForbiddenError('Нет прав для этой операции');
-
   }
   return User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
     .then((data) => {
@@ -94,7 +93,6 @@ const updateUserAvatar = (req, res, next) => {
     })
     .catch((err) => {
       next(err);
-
     });
 };
 
@@ -103,32 +101,27 @@ const login = (req, res, next) => {
 
   if (!email || !password) {
     throw new BadRequestError('Проверьте почту или пароль');
-
   }
 
   return User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-
-        throw new NotFoundError('Пользователь не найден');
+        throw new UnauthorizedError('Проверьте почту или пароль');
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
             throw new BadRequestError('Проверьте почту или пароль');
-
           }
-          const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '5d' });
+          const token = jwt.sign({ _id: user._id }, SECRET_KEY, { expiresIn: '5d' });
           res.status(200).send({ payload: token });
         });
     })
     .catch((err) => {
       next(err);
-
     });
 };
 const getCurrentUser = (req, res, next) => {
-
   const { _id } = req.user;
   if (!_id) {
     throw new NotFoundError('Пользователь не найден');
@@ -143,7 +136,6 @@ const getCurrentUser = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-
 };
 
 module.exports = {

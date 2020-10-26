@@ -16,6 +16,7 @@ const router = require('./routes/users');
 const { login, addUser } = require('./controllers/users');
 const { authentificate } = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const NotFoundError = require('./errors/notFoundError');
 // const { propfind } = require('./routes/cards');
 // const allowedCors = [
 //   'http://dtm.students.nomoreparties.co',
@@ -30,31 +31,15 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false,
 });
 
-const errorHandler = (req, res) => {
-  res.status(404).send({
-    message: 'Запрашиваемый ресурс не найден',
-  });
+const errorHandler = (req, res, next) => {
+  next(new NotFoundError('Запрашиваемый ресурс не найден'));
 };
 
-//  заменена настройка body-parser, была url-encoded
-//  теперь json
-//  в postman отправляется запрос в формате raw/json
 app.use(bodyParser.json());
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '5f63e4b8cb5b950e2cf76fb2',
-//   };
 
-//   next();
-// });
-// app.use((req, res, next) => {
-//   const { origin } = req.header;
-//   if (allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//   }
-//   next();
-// });
-app.use(cors());
+app.use(cors({
+  origin: 'https://scp.students.nomoreparties.space',
+}));
 app.use(requestLogger);
 
 app.get('/crash-test', () => {
@@ -85,12 +70,13 @@ app.use(errorLogger);
 app.use(errorHandler);
 
 app.use(errors());
+//  eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  res.status(err.statusCode || 500).send({ message: err.message || "Ошибка сервера" });
+  res.status(err.statusCode || 500).send({ message: err.message || 'Ошибка сервера' });
 });
 
 const { PORT = 3000 } = process.env;
-
+//  eslint-disable-next-line no-console
 app.listen(PORT, () => {
   console.log('Listenning at the prot: ', PORT);
 });
